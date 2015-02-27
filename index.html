@@ -5,33 +5,45 @@
     <title>Translation example</title>
 </head>
 <body>
-    <div translate>workshop</div> -> цех
-    <div translate>comment</div> -> комментарий без контекста
-    <div translate translate-context='noun'>comment</div> -> комментарий
-    <div translate translate-context='verb'>comment</div> -> комментировать
-    <div translate translate-n='1' translate-plural='comments'>comment</div> -> комментарий без контекста
-    <div translate translate-n='2' translate-plural='comments'>comment</div> -> комментария без контекста
-    <div translate translate-n='5' translate-plural='comments'>comment</div> -> комментариев без контекста
-    <div translate translate-n='1' translate-plural='comments' translate-context='noun'>comment</div> -> комментарий
-    <div translate translate-n='2' translate-plural='comments' translate-context='noun'>comment</div> -> комментария
-    <div translate translate-n='5' translate-plural='comments' translate-context='noun'>comment</div> -> комментариев
-    <div translate translate-n='1' translate-plural='did' translate-context='male'>did</div> -> сделал
-    <div translate translate-n='2' translate-plural='did' translate-context='male'>did</div> -> сделали
-    <div translate translate-n='5' translate-plural='did' translate-context='male'>did</div> -> сделали
-    <div translate translate-n='1' translate-plural='did' translate-context='female'>did</div> -> сделала
-    <div translate translate-n='2' translate-plural='did' translate-context='female'>did</div> -> сделали
-    <div translate translate-n='5' translate-plural='did' translate-context='female'>did</div> -> сделали
+    <select ng-model="currentLanguage" ng-change="onLanguageChange()">
+        <option value="ru">ru</option>
+        <option value="en">en</option>
+    </select>
+    <div><span translate>workshop</span> -> цех</div>
+    <div><span translate>comment</span> -> комментарий без контекста</div>
+    <div><span translate translate-context='noun'>comment</span> -> комментарий</div>
+    <div><span translate translate-context='verb'>comment</span> -> комментировать</div>
+    <div><span translate translate-n='1' translate-plural='comments'>comment</span> -> комментарий без контекста</div>
+    <div><span translate translate-n='2' translate-plural='comments'>comment</span> -> комментария без контекста</div>
+    <div><span translate translate-n='5' translate-plural='comments'>comment</span> -> комментариев без контекста</div>
+    <div><span translate translate-n='1' translate-plural='comments' translate-context='noun'>comment</span> -> комментарий</div>
+    <div><span translate translate-n='2' translate-plural='comments' translate-context='noun'>comment</span> -> комментария</div>
+    <div><span translate translate-n='5' translate-plural='comments' translate-context='noun'>comment</span> -> комментариев</div>
+    <div><span translate translate-n='1' translate-plural='did' translate-context='male'>did</span> -> сделал</div>
+    <div><span translate translate-n='2' translate-plural='did' translate-context='male'>did</span> -> сделали</div>
+    <div><span translate translate-n='5' translate-plural='did' translate-context='male'>did</span> -> сделали</div>
+    <div><span translate translate-n='1' translate-plural='did' translate-context='female'>did</span> -> сделала</div>
+    <div><span translate translate-n='2' translate-plural='did' translate-context='female'>did</span> -> сделали</div>
+    <div><span translate translate-n='5' translate-plural='did' translate-context='female'>did</span> -> сделали</div>
     <script src='bower_components/angular/angular.js'></script>
     <script src='bower_components/angular-gettext/dist/angular-gettext.js'></script>
     <script>
-        angular.module('translationExampleApp', ['gettext']).run(function ($http, gettextCatalog) {
-			var language = 'ru'
-			if (language != 'en') {
-				$http.get(language + '.json').success(function(data) {
-					gettextCatalog.setStrings(language, data)
-					gettextCatalog.setCurrentLanguage(language)
-				})
-			}
+        angular.module('translationExampleApp', ['gettext']).run(function ($rootScope, $http, gettextCatalog, $q) {
+            $rootScope.currentLanguage = 'en'
+            $rootScope.onLanguageChange = function() {
+                var deferred = $q.defer()
+                deferred.promise.then(function() {
+                    gettextCatalog.setCurrentLanguage($rootScope.currentLanguage)
+                })
+                if ($rootScope.currentLanguage != 'en') {
+                    $http.get($rootScope.currentLanguage + '.json').success(function(data) {
+                        gettextCatalog.setStrings($rootScope.currentLanguage, data)
+                        deferred.resolve()
+                    })
+                } else {
+                    deferred.resolve()
+                }
+            }
         })
     </script>
 </body>
