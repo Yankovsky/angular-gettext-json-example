@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang='en' ng-app='translationExampleApp'>
+<head>
+    <meta charset='utf-8'>
+    <title>Translation example</title>
+</head>
+<body>
+    <div translate>workshop</div> -> цех
+    <div translate>comment</div> -> комментарий без контекста
+    <div translate translate-context='noun'>comment</div> -> комментарий
+    <div translate translate-context='verb'>comment</div> -> комментировать
+    <div translate translate-n='1' translate-plural='comments'>comment</div> -> комментарий без контекста
+    <div translate translate-n='2' translate-plural='comments'>comment</div> -> комментария без контекста
+    <div translate translate-n='5' translate-plural='comments'>comment</div> -> комментариев без контекста
+    <div translate translate-n='1' translate-plural='comments' translate-context='noun'>comment</div> -> комментарий
+    <div translate translate-n='2' translate-plural='comments' translate-context='noun'>comment</div> -> комментария
+    <div translate translate-n='5' translate-plural='comments' translate-context='noun'>comment</div> -> комментариев
+    <div translate translate-n='1' translate-plural='did' translate-context='male'>did</div> -> сделал
+    <div translate translate-n='2' translate-plural='did' translate-context='male'>did</div> -> сделали
+    <div translate translate-n='5' translate-plural='did' translate-context='male'>did</div> -> сделали
+    <div translate translate-n='1' translate-plural='did' translate-context='female'>did</div> -> сделала
+    <div translate translate-n='2' translate-plural='did' translate-context='female'>did</div> -> сделали
+    <div translate translate-n='5' translate-plural='did' translate-context='female'>did</div> -> сделали
+    <script src='bower_components/angular/angular.js'></script>
+    <script src='bower_components/angular-gettext/dist/angular-gettext.js'></script>
+    <script>
+        angular.module('translationExampleApp', ['gettext']).run(function ($http, gettextCatalog) {
+			var language = 'ru'
+			if (language != 'en') {
+				$http.get(language + '.json').success(function(data) {
+					gettextCatalog.setStrings(language, data)
+					gettextCatalog.setCurrentLanguage(language)
+				})
+			}
+        })
+    </script>
+</body>
+</html>
